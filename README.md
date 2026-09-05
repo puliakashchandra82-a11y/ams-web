@@ -1,5 +1,6 @@
 # Relay AMS — Web (v0.1.0)
 
+<-- stating test-->
 Static HTML/CSS/JS dashboard. No build step, no backend yet — `data.js`
 stands in for the database and `app.js` simulates an agent picking up and
 completing a job (pending → running → completed/failed) so you can see the
@@ -18,6 +19,7 @@ Some browsers restrict things when opened as a raw file. From this folder:
 ```
 python -m http.server 8000
 ```
+
 Then open http://localhost:8000 in your browser.
 
 ## What to try
@@ -40,12 +42,14 @@ git push -u origin main
 ```
 
 Create a `staging` branch too, since we'll deploy that separately later:
+
 ```
 git checkout -b staging
 git push -u origin staging
 ```
 
 ## Next steps (not done yet)
+
 - Replace `data.js` with real Supabase queries + Realtime subscription
 - Add login/auth
 - Wire GitHub Pages (or Cloudflare Pages) for prod + staging
