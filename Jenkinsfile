@@ -17,6 +17,11 @@ pipeline {
                 )
             }
         }
+        stage('Inject version') {
+            steps {
+                sh "sed -i 's/{{VERSION}}/${params.VERSION_TAG}/' index.html"
+            }
+        }
         stage('Deploy to Cloudflare') {
             steps {
                 withCredentials([
