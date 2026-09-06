@@ -1,143 +1,183 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Relay AMS</title>
-<link rel="stylesheet" href="style.css" />
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relay AMS</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <p>Version: {{VERSION}}</p>
+  <body>
+    <div class="shell">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="brand-mark">AMS</span>
+          <span class="brand-name">Relay</span>
+        </div>
 
-  <div class="shell">
+        <nav class="nav">
+          <button class="nav-item active" data-view="dashboard">
+            Dashboard
+          </button>
+          <button class="nav-item" data-view="run">Run Operation</button>
+          <button class="nav-item" data-view="jobs">Jobs</button>
+          <button class="nav-item" data-view="history">History</button>
+          <button class="nav-item" data-view="admin">Admin</button>
+        </nav>
 
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="brand">
-        <span class="brand-mark">AMS</span>
-        <span class="brand-name">Relay</span>
+        <div class="sidebar-footer">
+          <div class="version-line">
+            <span>AMS</span><span class="mono">v0.1.0</span>
+          </div>
+          <div class="version-line">
+            <span>Agent</span><span class="mono">v0.1.0</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <div class="main">
+        <header class="topbar">
+          <div>
+            <h1 id="view-title">Dashboard</h1>
+            <p id="view-subtitle" class="muted">
+              Overview of registered machines and recent activity
+            </p>
+          </div>
+          <div class="user-chip">
+            <span class="dot online"></span>
+            <span>you@relay.local</span>
+          </div>
+        </header>
+
+        <!-- DASHBOARD VIEW -->
+        <section id="view-dashboard" class="view">
+          <div class="grid-machines" id="machine-grid"></div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <h2>Recent jobs</h2>
+            </div>
+            <table class="job-table" id="recent-jobs-table">
+              <thead>
+                <tr>
+                  <th>Machine</th>
+                  <th>Operation</th>
+                  <th>Status</th>
+                  <th>Requested</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- RUN OPERATION VIEW -->
+        <section id="view-run" class="view hidden">
+          <div class="panel form-panel">
+            <div class="panel-head">
+              <h2>Request an operation</h2>
+            </div>
+            <form id="run-form">
+              <label>
+                Target machine
+                <select id="select-machine"></select>
+              </label>
+              <label>
+                Operation
+                <select id="select-operation"></select>
+              </label>
+              <div id="param-fields"></div>
+              <button type="submit" class="btn-primary">Run</button>
+            </form>
+            <p id="run-feedback" class="muted"></p>
+          </div>
+        </section>
+
+        <!-- JOBS VIEW (live) -->
+        <section id="view-jobs" class="view hidden">
+          <div class="panel">
+            <div class="panel-head">
+              <h2>Active &amp; recent jobs</h2>
+              <span class="muted small">Updates automatically</span>
+            </div>
+            <table class="job-table" id="jobs-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Machine</th>
+                  <th>Operation</th>
+                  <th>Status</th>
+                  <th>Result</th>
+                  <th>Requested</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- HISTORY VIEW -->
+        <section id="view-history" class="view hidden">
+          <div class="panel">
+            <div class="panel-head">
+              <h2>History</h2>
+              <input
+                id="history-search"
+                class="search"
+                placeholder="Filter by machine or operation"
+              />
+            </div>
+            <table class="job-table" id="history-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Machine</th>
+                  <th>Operation</th>
+                  <th>Status</th>
+                  <th>Completed</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ADMIN VIEW -->
+        <section id="view-admin" class="view hidden">
+          <div class="panel">
+            <div class="panel-head"><h2>Registered machines</h2></div>
+            <table class="job-table" id="admin-machines-table">
+              <thead>
+                <tr>
+                  <th>Machine</th>
+                  <th>Agent version</th>
+                  <th>Status</th>
+                  <th>Last check-in</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h2>Operation catalog</h2></div>
+            <table class="job-table" id="admin-ops-table">
+              <thead>
+                <tr>
+                  <th>Operation</th>
+                  <th>Parameters</th>
+                  <th>Allowed roles</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
       </div>
-
-      <nav class="nav">
-        <button class="nav-item active" data-view="dashboard">Dashboard</button>
-        <button class="nav-item" data-view="run">Run Operation</button>
-        <button class="nav-item" data-view="jobs">Jobs</button>
-        <button class="nav-item" data-view="history">History</button>
-        <button class="nav-item" data-view="admin">Admin</button>
-      </nav>
-
-      <div class="sidebar-footer">
-        <div class="version-line"><span>AMS</span><span class="mono">v0.1.0</span></div>
-        <div class="version-line"><span>Agent</span><span class="mono">v0.1.0</span></div>
-      </div>
-    </aside>
-
-    <!-- Main -->
-    <div class="main">
-
-      <header class="topbar">
-        <div>
-          <h1 id="view-title">Dashboard</h1>
-          <p id="view-subtitle" class="muted">Overview of registered machines and recent activity</p>
-        </div>
-        <div class="user-chip">
-          <span class="dot online"></span>
-          <span>you@relay.local</span>
-        </div>
-      </header>
-
-      <!-- DASHBOARD VIEW -->
-      <section id="view-dashboard" class="view">
-        <div class="grid-machines" id="machine-grid"></div>
-
-        <div class="panel">
-          <div class="panel-head">
-            <h2>Recent jobs</h2>
-          </div>
-          <table class="job-table" id="recent-jobs-table">
-            <thead>
-              <tr><th>Machine</th><th>Operation</th><th>Status</th><th>Requested</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- RUN OPERATION VIEW -->
-      <section id="view-run" class="view hidden">
-        <div class="panel form-panel">
-          <div class="panel-head">
-            <h2>Request an operation</h2>
-          </div>
-          <form id="run-form">
-            <label>
-              Target machine
-              <select id="select-machine"></select>
-            </label>
-            <label>
-              Operation
-              <select id="select-operation"></select>
-            </label>
-            <div id="param-fields"></div>
-            <button type="submit" class="btn-primary">Run</button>
-          </form>
-          <p id="run-feedback" class="muted"></p>
-        </div>
-      </section>
-
-      <!-- JOBS VIEW (live) -->
-      <section id="view-jobs" class="view hidden">
-        <div class="panel">
-          <div class="panel-head">
-            <h2>Active &amp; recent jobs</h2>
-            <span class="muted small">Updates automatically</span>
-          </div>
-          <table class="job-table" id="jobs-table">
-            <thead>
-              <tr><th>ID</th><th>Machine</th><th>Operation</th><th>Status</th><th>Result</th><th>Requested</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- HISTORY VIEW -->
-      <section id="view-history" class="view hidden">
-        <div class="panel">
-          <div class="panel-head">
-            <h2>History</h2>
-            <input id="history-search" class="search" placeholder="Filter by machine or operation" />
-          </div>
-          <table class="job-table" id="history-table">
-            <thead>
-              <tr><th>ID</th><th>Machine</th><th>Operation</th><th>Status</th><th>Completed</th></tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- ADMIN VIEW -->
-      <section id="view-admin" class="view hidden">
-        <div class="panel">
-          <div class="panel-head"><h2>Registered machines</h2></div>
-          <table class="job-table" id="admin-machines-table">
-            <thead><tr><th>Machine</th><th>Agent version</th><th>Status</th><th>Last check-in</th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-        <div class="panel">
-          <div class="panel-head"><h2>Operation catalog</h2></div>
-          <table class="job-table" id="admin-ops-table">
-            <thead><tr><th>Operation</th><th>Parameters</th><th>Allowed roles</th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-      </section>
-
     </div>
-  </div>
 
-  <script src="data.js"></script>
-  <script src="app.js"></script>
-</body>
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
 </html>
